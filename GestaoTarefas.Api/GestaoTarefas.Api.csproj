@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.31" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoTarefas.CrossCutting\GestaoTarefas.CrossCutting.csproj" />
+    <ProjectReference Include="..\GestaoTarefas.Data\GestaoTarefas.Data.csproj" />
+    <ProjectReference Include="..\GestaoTarefas.Domain\GestaoTarefas.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

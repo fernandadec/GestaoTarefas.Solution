@@ -1,0 +1,157 @@
+﻿@using GestaoTarefas.Web.Models.Lista
+@model ListaModel
+
+@{
+    ViewData["Title"] = "Criar Lista";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="index.html">Gestão de Tarefas</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Opções</div>
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                            Lista Tarefas
+                        </a>
+                        <a class="nav-link" href="@Url.Action("CriarLista", "Home")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                            Criar Listas
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main style="margin-left: 20px;">
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Criar Nova Lista de Tarefas</h1>
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4">
+                                <div class="card-header">Dados da Lista</div>
+                                <div class="card-body">
+                                    <form asp-action="CriarLista" method="post">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="NomeLista" class="form-label"></label>
+                                            <input asp-for="NomeLista" class="form-control" required />
+                                            <span asp-validation-for="NomeLista" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="NomeAutor" class="form-label"></label>
+                                            <input asp-for="NomeAutor" class="form-control" required />
+                                            <span asp-validation-for="NomeAutor" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="DataCriacao" class="form-label"></label>
+                                            <input asp-for="DataCriacao" class="form-control" required />
+                                            <span asp-validation-for="DataCriacao" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="card mb-4">
+                                            <div class="card-header">Tarefas</div>
+                                            <div class="card-body">
+                                                <div id="tarefas-container" class="mb-3">
+                                                    <button type="button" class="btn btn-success mb-2" id="add-tarefa">Adicionar nova Tarefa</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Criar Lista</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Teste Fernanda 2023</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="/assets/demo/chart-area-demo.js"></script>
+    <script src="/assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('add-tarefa').addEventListener('click', function () {
+            addTarefa();
+        });
+
+        function addTarefa() {
+            var container = document.getElementById('tarefas-container');
+            var tarefaIndex = container.getElementsByClassName('tarefa-item').length;
+
+            var tarefaDiv = document.createElement('div');
+            tarefaDiv.classList.add('mb-3', 'tarefa-item');
+
+            tarefaDiv.innerHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">Título da Tarefa</label>
+                            <input type="text" name="ListaTarefas[${tarefaIndex}].Titulo" class="form-control mb-2" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descrição da Tarefa</label>
+                            <textarea name="ListaTarefas[${tarefaIndex}].Descricao" class="form-control mb-2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="ListaTarefas[${tarefaIndex}].Ativo" class="form-control mb-2" required>
+                                <option value="true">Em Andamento</option>
+                                <option value="false">Concluído</option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-danger mb-2" onclick="removeTarefa(this)">Remover</button>
+                        </div>
+                        <hr />
+                    `;
+            container.appendChild(tarefaDiv);
+
+            var newAddButtons = container.getElementsByClassName('add-tarefa-internal');
+            for (var i = 0; i < newAddButtons.length; i++) {
+                newAddButtons[i].addEventListener('click', addTarefa);
+            }
+        }
+
+        function removeTarefa(button) {
+            button.parentElement.parentElement.remove();
+
+
+            var container = document.getElementById('tarefas-container');
+            var tarefas = container.getElementsByClassName('tarefa-item');
+            for (var i = 0; i < tarefas.length; i++) {
+                tarefas[i].querySelector('input[name^="ListaTarefas"]').name = `ListaTarefas[${i}].Titulo`;
+                tarefas[i].querySelector('textarea[name^="ListaTarefas"]').name = `ListaTarefas[${i}].Descricao`;
+                tarefas[i].querySelector('select[name^="ListaTarefas"]').name = `ListaTarefas[${i}].Ativo`;
+            }
+        }
+    </script>
+    <script src="/js/datatables-simple-demo.js"></script>
+</body>
